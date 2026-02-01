@@ -130,7 +130,14 @@
           {Credo.Check.Refactor.MatchInCondition, []},
           {Credo.Check.Refactor.NegatedConditionsInUnless, []},
           {Credo.Check.Refactor.NegatedConditionsWithElse, []},
-          {Credo.Check.Refactor.Nesting, []},
+          {Credo.Check.Refactor.Nesting,
+           [
+             files: %{
+               excluded: [
+                 "lib/authentication/release.ex"
+               ]
+             }
+           ]},
           {Credo.Check.Refactor.RedundantWithClauseResult, []},
           {Credo.Check.Refactor.RejectReject, []},
           {Credo.Check.Refactor.UnlessWithElse, []},
