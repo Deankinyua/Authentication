@@ -20,6 +20,15 @@ defmodule AuthenticationWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/auth", AuthenticationWeb do
+    pipe_through :browser
+
+    get "/logout", AuthController, :logout
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", AuthenticationWeb do
   #   pipe_through :api
