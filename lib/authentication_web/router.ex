@@ -1,6 +1,8 @@
 defmodule AuthenticationWeb.Router do
   use AuthenticationWeb, :router
 
+  import AuthenticationWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule AuthenticationWeb.Router do
     plug :put_root_layout, html: {AuthenticationWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -18,6 +21,12 @@ defmodule AuthenticationWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/", AuthenticationWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/live", HomeLive.Index, :index
   end
 
   scope "/auth", AuthenticationWeb do
