@@ -51,6 +51,8 @@ defmodule AuthenticationWeb.UserAuth do
   # function will clear the session to avoid fixation attacks. See the
   # renew_session function to customize this behaviour.
   defp create_session(conn, user, params) do
+    # immediately after calling generate_user_session_token/1
+    # the token has been inserted into the DB and is now being returned for you to put it in the session
     token = Accounts.generate_user_session_token(user)
     remember_me = get_session(conn, :user_remember_me)
 
@@ -153,6 +155,7 @@ defmodule AuthenticationWeb.UserAuth do
   @spec fetch_current_user(plug_conn(), map()) :: plug_conn()
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
+    # If there is a token, fetch the user by that session token
     user = user_token && Accounts.get_user_by_session_token(user_token)
     assign(conn, :current_user, user)
   end
@@ -172,6 +175,7 @@ defmodule AuthenticationWeb.UserAuth do
   end
 
   defp put_token_in_session(conn, token) do
+    # the token that's already in the DB is now put inside the connection so that it can identify you
     put_session(conn, :user_token, token)
   end
 

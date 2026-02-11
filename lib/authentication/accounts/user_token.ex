@@ -8,6 +8,8 @@ defmodule Authentication.Accounts.UserToken do
   alias Authentication.Accounts.User
   alias Authentication.Accounts.UserToken
 
+  @type token :: binary()
+
   @rand_size 32
   @session_validity_in_days 14
 
@@ -42,7 +44,8 @@ defmodule Authentication.Accounts.UserToken do
   session they deem invalid.
   """
 
-  @spec build_session_token(User.t()) :: {any(), any()}
+  # returns a token (random gibberish) and a UserToken struct that is yet to be inserted
+  @spec build_session_token(User.t()) :: {token(), any()}
   def build_session_token(%User{} = user) do
     token = :crypto.strong_rand_bytes(@rand_size)
     {token, %UserToken{token: token, context: "session", user_id: user.id}}
@@ -56,6 +59,7 @@ defmodule Authentication.Accounts.UserToken do
   The token is valid if it matches the value in the database and it has
   not expired (after @session_validity_in_days).
   """
+  @spec verify_session_token_query(token()) :: {:ok, Ecto.Query.t()}
   def verify_session_token_query(token) do
     query =
       from token in token_and_context_query(token, "session"),

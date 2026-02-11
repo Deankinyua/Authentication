@@ -127,6 +127,7 @@ defmodule Authentication.Accounts do
 
   @doc """
   Deletes all remaining tokens from db that belong to user.
+  It will be called when logging in to ensure all tokens are deleted before we create a new one
 
   ## Examples
 
