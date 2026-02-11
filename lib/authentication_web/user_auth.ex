@@ -7,6 +7,7 @@ defmodule AuthenticationWeb.UserAuth do
   import Plug.Conn
 
   alias Authentication.Accounts
+  alias Authentication.Accounts.User
 
   @type plug_conn :: Plug.Conn.t()
 
@@ -34,6 +35,7 @@ defmodule AuthenticationWeb.UserAuth do
   Redirects to the session's `:user_return_to` path
   or falls back to the `signed_in_path/1`.
   """
+  @spec log_in_user(plug_conn(), User.t(), map()) :: plug_conn()
   def log_in_user(conn, user, params \\ %{}) do
     user_return_to = get_session(conn, :user_return_to)
 
@@ -105,6 +107,7 @@ defmodule AuthenticationWeb.UserAuth do
 
   It clears all session data for safety. See renew_session.
   """
+  @spec log_out_user(plug_conn()) :: plug_conn()
   def log_out_user(conn) do
     user_token = get_session(conn, :user_token)
     user_token && Accounts.delete_user_session_token(user_token)
@@ -136,6 +139,7 @@ defmodule AuthenticationWeb.UserAuth do
   @doc """
   Plug for routes that require the user to be authenticated.
   """
+  @spec require_authenticated_user(plug_conn(), map()) :: plug_conn()
   def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
       conn
