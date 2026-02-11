@@ -180,7 +180,9 @@ defmodule AuthenticationWeb.UserAuth do
 
   defp put_token_in_session(conn, token) do
     # the token that's already in the DB is now put inside the connection so that it can identify you
-    put_session(conn, :user_token, token)
+    conn
+    |> put_session(:user_token, token)
+    |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
   end
 
   defp signed_in_path(_conn), do: ~p"/"
