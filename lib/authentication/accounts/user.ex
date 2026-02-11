@@ -14,7 +14,7 @@ defmodule Authentication.Accounts.User do
     field :email, :string
     field :username, :string
 
-    timestamps(type: :utc_datetime)
+    timestamps()
   end
 
   @doc """
